@@ -15,7 +15,7 @@ def SelectButton():
 	global width
 	global i,fin,fn,ext,filename,fin2,filename2
 	filename = str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
-	fn,ext = os.path.basename(filename).split('.')
+	fn,ext = os.path.basename(filename).rsplit('.',1)
 	fin='"'+filename+'"'
 	fin2=fin
 	filename2=filename
