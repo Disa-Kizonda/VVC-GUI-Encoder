@@ -10,6 +10,7 @@ global width
 global fin,fn,ext,filename
 global fin2,filename2
 def SelectButton():
+	global filesize1
 	global fps
 	global height
 	global width
@@ -19,12 +20,14 @@ def SelectButton():
 	fin='"'+filename+'"'
 	fin2=fin
 	filename2=filename
+	filesize1 = str(round(os.path.getsize(filename) / (1024*1024),2))
+	fs1.config(text = 'Size(Mb): '+filesize1)
 	os.system('ffmpeg_vvceasy.exe -y -i '+fin+' -vf thumbnail -frames:v 1  '+fin+'.jpg')
 	imgone=Image.open(filename+'.jpg')
 	if imgone.size[0] >= imgone.size[1]:
-		wpercent = (160/float(imgone.size[0]))
+		wpercent = (180/float(imgone.size[0]))
 		hsize = int((float(imgone.size[1])*float(wpercent)))
-		i=ImageTk.PhotoImage(imgone.resize((160,hsize)))
+		i=ImageTk.PhotoImage(imgone.resize((180,hsize)))
 	else:
 		wpercent = (200/float(imgone.size[1]))
 		wsize = int((float(imgone.size[0])*float(wpercent)))
@@ -39,7 +42,7 @@ def SelectButton():
 	height = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_HEIGHT))
 	width = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_WIDTH))
 def EncodeButton():
-	global ii,fin2,filename2
+	global ii,fin2,filename2,filesize2
 	prst=preset.get()
 	pss=passes.get()
 	filename2=saveto.get()
@@ -58,17 +61,19 @@ def EncodeButton():
 	os.system("mp4box.exe -add "+fin2+" -add "+fin2+"_266.jpg -new "+fin2)
 	imgtwo=Image.open(filename2+'_266.jpg')
 	if imgtwo.size[0] >= imgtwo.size[1]:
-		wpercent = (160/float(imgtwo.size[0]))
+		wpercent = (180/float(imgtwo.size[0]))
 		hsize = int((float(imgtwo.size[1])*float(wpercent)))
-		ii=ImageTk.PhotoImage(imgtwo.resize((160,hsize)))
+		ii=ImageTk.PhotoImage(imgtwo.resize((180,hsize)))
 	else:
 		wpercent = (200/float(imgtwo.size[1]))
 		wsize = int((float(imgtwo.size[0])*float(wpercent)))
 		ii=ImageTk.PhotoImage(imgtwo.resize((wsize,200)))
-	canvas.create_image(170, 0, anchor='nw', image=ii)
-	os.remove(filename2+"_266.jpg")
+	canvas.create_image(180, 0, anchor='nw', image=ii)
 	os.remove(filename2+".Y4M")
 	os.remove(fn+"."+ext+".m4a")
+	os.remove(filename2+"_266.jpg")
+	filesize2 = str(round(os.path.getsize(filename2) / (1024*1024),2))
+	fs2.config(text = 'Size(Mb): '+filesize2)
 def btnClickFunctiontwo():
 	global fin2, filename2
 	data = [("mp4","*.mp4")]
@@ -90,9 +95,15 @@ Label(root,text='Preset', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9,
 Label(root,text='1 pass / 2 pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=188)
 Label(root,text='1 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=169, y=8)
 Label(root,text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=329, y=8)
-Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=38)
-Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=329, y=38)
+Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=28)
+Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=329, y=28)
+
 Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
+
+fs1=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
+fs1.place(x=129, y=288)
+fs2=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
+fs2.place(x=310, y=288)
 
 videoselect=Entry(root)
 videoselect.place(x=9,y=38)
@@ -100,23 +111,23 @@ videoselect.place(x=9,y=38)
 saveto=Entry(root,width=65)
 saveto.place(x=9,y=318)
 
-preset=ttk.Combobox(root, values=['faster','fast','medium','slow','slower'],font=('arial',12,'normal'),width=10,state ="readonly")
+preset=ttk.Combobox(root, values=['faster','fast','medium','slow','slower'],font=('arial',12,'normal'),width=6,state ="readonly")
 preset.place(x=9,y=148)
 preset.current(1)
 
-passes=ttk.Combobox(root,values=['1 pass', '2 pass'],font=('arial',12,'normal'),width=10,state="readonly")
+passes=ttk.Combobox(root,values=['1 pass', '2 pass'],font=('arial',12,'normal'),width=6,state="readonly")
 passes.place(x=9,y=218)
 passes.current(0)
 
 quality=Spinbox(root,from_=1,to=63,font=('arial',10,'italic'),bg='#F0F8FF',width=10)
-quality.place(x=169,y=58)
+quality.place(x=169,y=48)
 quality.insert(0,3)
 
 qualitytwo=Entry(root)
-qualitytwo.place(x=329,y=58)
+qualitytwo.place(x=329,y=48)
 qualitytwo.insert(0,500)
 
-canvas=tk.Canvas(root,width=330,height=200)
-canvas.place(x=159,y=88)
+canvas=tk.Canvas(root,width=360,height=200)
+canvas.place(x=129,y=78)
 
 root.mainloop()
