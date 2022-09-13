@@ -8,19 +8,22 @@ global fps
 global height
 global width
 global fin,fn,ext,filename
+global fin2,filename2
 def SelectButton():
 	global fps
 	global height
 	global width
-	global i,fin,fn,ext,filename
+	global i,fin,fn,ext,filename,fin2,filename2
 	filename = str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
 	fn,ext = os.path.basename(filename).split('.')
 	fin='"'+filename+'"'
+	fin2=fin
+	filename2=filename
 	os.system('ffmpeg_vvceasy.exe -y -i '+fin+' -vf thumbnail -frames:v 1  '+fin+'.jpg')
 	imgone=Image.open(filename+'.jpg')
-	wpercent = (150/float(imgone.size[0]))
+	wpercent = (160/float(imgone.size[0]))
 	hsize = int((float(imgone.size[1])*float(wpercent)))
-	i=ImageTk.PhotoImage(imgone.resize((150,hsize)))
+	i=ImageTk.PhotoImage(imgone.resize((160,hsize)))
 	canvas.create_image(0, 0, anchor='nw', image=i)
 	os.remove(filename+'.jpg')
 	videoselect.delete(0,END)
@@ -31,31 +34,38 @@ def SelectButton():
 	height = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_HEIGHT))
 	width = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_WIDTH))
 def EncodeButton():
-	global ii
+	global ii,fin2,filename2
 	prst=preset.get()
 	pss=passes.get()
+	filename2=saveto.get()
+	fin2='"'+saveto.get()+'"'
 	os.system("ffmpeg_vvceasy.exe -i "+fin+" -q:a 0 -map a "+fn+"."+ext+".wav")
 	os.system("exhale.exe c "+fn+"."+ext+".wav "+fn+"."+ext+".m4a") 
-	os.system("ffmpeg_vvceasy.exe -y -i "+fin+" -pix_fmt yuv420p -strict -1 "+fin+".Y4M")
-	if pss == "1 pass": 
-		os.system("vvencapp.exe --preset "+prst+" -i "+fin+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+"  -q "+quality.get()+" -o "+fin+".266")
-	if pss == "2 pass": 
-		os.system("vvencapp.exe --preset "+prst+" -i "+fin+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+" --qpa 1 -p 2 -b "+qualitytwo.get()+"k -o "+fin+".266")
-	os.system("mp4box.exe -add "+fin+".266:fmt=VVC -add "+fn+"."+ext+".m4a -new "+fin+"_266.mp4")
-	os.remove(filename+".266")
-	os.system("ffmpeg_vvceasy.exe -y -i "+fin+"_266.mp4 -vf 'thumbnail' -frames:v 1  "+fin+"_266.jpg")
-	os.system("mp4box.exe -add "+fin+"_266.mp4 -add "+fin+"_266.jpg -new "+fin+"_266.mp4")
-	imgtwo=Image.open(filename+'_266.jpg')
-	wpercent = (150/float(imgtwo.size[0]))
-	hsize = int((float(imgtwo.size[1])*float(wpercent)))
-	ii=ImageTk.PhotoImage(imgtwo.resize((150,hsize)))
-	canvas2.create_image(0, 0, anchor='nw', image=ii)
-	os.remove(filename+"_266.jpg")
-	os.remove(filename+".Y4M")
 	os.remove(fn+"."+ext+".wav")
+	os.system("ffmpeg_vvceasy.exe -y -i "+fin+" -pix_fmt yuv420p -strict -1 "+fin2+".Y4M")
+	if pss == "1 pass": 
+		os.system("vvencapp.exe --preset "+prst+" -i "+fin2+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+"  -q "+quality.get()+" -o "+fin2+".266")
+	if pss == "2 pass": 
+		os.system("vvencapp.exe --preset "+prst+" -i "+fin2+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+" --qpa 1 -p 2 -b "+qualitytwo.get()+"k -o "+fin2+".266")
+	os.system("mp4box.exe -add "+fin2+".266:fmt=VVC -add "+fn+"."+ext+".m4a -new "+fin2)
+	os.remove(filename2+".266")
+	os.system("ffmpeg_vvceasy.exe -y -i "+fin2+" -vf 'thumbnail' -frames:v 1  "+fin2+"_266.jpg")
+	os.system("mp4box.exe -add "+fin2+" -add "+fin2+"_266.jpg -new "+fin2)
+	imgtwo=Image.open(filename2+'_266.jpg')
+	wpercent = (160/float(imgtwo.size[0]))
+	hsize = int((float(imgtwo.size[1])*float(wpercent)))
+	ii=ImageTk.PhotoImage(imgtwo.resize((160,hsize)))
+	canvas.create_image(170, 0, anchor='nw', image=ii)
+	os.remove(filename2+"_266.jpg")
+	os.remove(filename2+".Y4M")
 	os.remove(fn+"."+ext+".m4a")
 def btnClickFunctiontwo():
-	print('clicked')
+	global fin2, filename2
+	data = [("mp4","*.mp4")]
+	saveto.delete(0,END)
+	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn+".mp4_266")))
+	filename2=saveto.get()
+	fin2='"'+saveto.get()+'"'
 root=Tk()
 root.geometry('500x350')
 root.configure(background='#F0F8FF')
@@ -96,10 +106,7 @@ qualitytwo=Entry(root)
 qualitytwo.place(x=329,y=58)
 qualitytwo.insert(0,500)
 
-canvas=tk.Canvas(root,width=150,height=200)
+canvas=tk.Canvas(root,width=330,height=200)
 canvas.place(x=159,y=88)
-
-canvas2=tk.Canvas(root,width=150,height=200)
-canvas2.place(x=329,y=88)
 
 root.mainloop()
