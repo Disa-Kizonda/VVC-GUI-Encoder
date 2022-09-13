@@ -21,9 +21,14 @@ def SelectButton():
 	filename2=filename
 	os.system('ffmpeg_vvceasy.exe -y -i '+fin+' -vf thumbnail -frames:v 1  '+fin+'.jpg')
 	imgone=Image.open(filename+'.jpg')
-	wpercent = (160/float(imgone.size[0]))
-	hsize = int((float(imgone.size[1])*float(wpercent)))
-	i=ImageTk.PhotoImage(imgone.resize((160,hsize)))
+	if imgone.size[0] >= imgone.size[1]:
+		wpercent = (160/float(imgone.size[0]))
+		hsize = int((float(imgone.size[1])*float(wpercent)))
+		i=ImageTk.PhotoImage(imgone.resize((160,hsize)))
+	else:
+		wpercent = (200/float(imgone.size[1]))
+		wsize = int((float(imgone.size[0])*float(wpercent)))
+		i=ImageTk.PhotoImage(imgone.resize((wsize,200)))
 	canvas.create_image(0, 0, anchor='nw', image=i)
 	os.remove(filename+'.jpg')
 	videoselect.delete(0,END)
@@ -52,9 +57,14 @@ def EncodeButton():
 	os.system("ffmpeg_vvceasy.exe -y -i "+fin2+" -vf 'thumbnail' -frames:v 1  "+fin2+"_266.jpg")
 	os.system("mp4box.exe -add "+fin2+" -add "+fin2+"_266.jpg -new "+fin2)
 	imgtwo=Image.open(filename2+'_266.jpg')
-	wpercent = (160/float(imgtwo.size[0]))
-	hsize = int((float(imgtwo.size[1])*float(wpercent)))
-	ii=ImageTk.PhotoImage(imgtwo.resize((160,hsize)))
+	if imgtwo.size[0] >= imgtwo.size[1]:
+		wpercent = (160/float(imgtwo.size[0]))
+		hsize = int((float(imgtwo.size[1])*float(wpercent)))
+		ii=ImageTk.PhotoImage(imgtwo.resize((160,hsize)))
+	else:
+		wpercent = (200/float(imgtwo.size[1]))
+		wsize = int((float(imgtwo.size[0])*float(wpercent)))
+		ii=ImageTk.PhotoImage(imgtwo.resize((wsize,200)))
 	canvas.create_image(170, 0, anchor='nw', image=ii)
 	os.remove(filename2+"_266.jpg")
 	os.remove(filename2+".Y4M")
