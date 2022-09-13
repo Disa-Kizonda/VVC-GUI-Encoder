@@ -1,6 +1,5 @@
 import tkinter as tk
-import sys, os, cv2, glob
-import subprocess
+import os, cv2
 from PIL import Image,  ImageTk
 from tkinter import ttk
 from tkinter import filedialog as fd
@@ -31,11 +30,6 @@ def btnClickFunctionone():
 	fps= int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FPS))
 	height = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_HEIGHT))
 	width = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_WIDTH))
-	print ()
-	print (fn+'.'+ext+' fps= '+str(fps) +' '+str(width)+'x'+str(height))
-def getInputBoxValue():
-	userInput = videoselect.get()
-	return userInput
 def btnClickFunction():
 	global ii
 	prst=preset.get()
@@ -60,53 +54,52 @@ def btnClickFunction():
 	os.remove(filename+".Y4M")
 	os.remove(fn+"."+ext+".wav")
 	os.remove(fn+"."+ext+".m4a")
-def getSelectedComboItem():
-	return preset.get()
-def getSelectedComboItem():
-	return passes.get()
-def getSelectedSpinBoxValue():
-	return quality.get()
-def getInputBoxValue():
-	userInput = qualitytwo.get()
-	return userInput
-def getInputBoxValue():
-	userInput = saveto.get()
-	return userInput
 def btnClickFunctiontwo():
 	print('clicked')
 root = Tk()
 root.geometry('500x350')
 root.configure(background='#F0F8FF')
 root.title('VVC GUI Encoder')
-Button(root, text='Encode', bg='#F0F8FF', font=('arial', 12, 'bold'), command=btnClickFunction).place(x=409, y=308)
-Label(root, text='Select Video', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=8)
+
+Button(root,text='Encode',bg='#F0F8FF',font=('arial',12,'bold'),command=btnClickFunction).place(x=409,y=308)
+Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=btnClickFunctionone).place(x=39,y=68)
+Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=btnClickFunctiontwo).place(x=39,y=278)
+
+Label(root,text='Select Video', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=8)
+Label(root,text='Preset', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=118)
+Label(root,text='1 pass / 2 pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=188)
+Label(root,text='1 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=169, y=8)
+Label(root,text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=329, y=8)
+Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=38)
+Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=329, y=38)
+Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
+
 videoselect=Entry(root)
-videoselect.place(x=9, y=38)
-Button(root, text='Select', bg='#F0F8FF', font=('arial', 12, 'normal'), command=btnClickFunctionone).place(x=39, y=68)
-Label(root, text='Preset', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=118)
-preset= ttk.Combobox(root, values=['faster', 'fast', 'medium', 'slow', 'slower'], font=('arial', 12, 'normal'), width=10, state = "readonly")
-preset.place(x=9, y=148)
+videoselect.place(x=9,y=38)
+
+preset=ttk.Combobox(root, values=['faster', 'fast', 'medium', 'slow', 'slower'],font=('arial',12,'normal'),width=10,state ="readonly")
+preset.place(x=9,y=148)
 preset.current(1)
-Label(root, text='1 pass / 2 pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=188)
-passes= ttk.Combobox(root, values=['1 pass', '2 pass'], font=('arial', 12, 'normal'), width=10, state = "readonly")
-passes.place(x=9, y=218)
+
+passes=ttk.Combobox(root,values=['1 pass', '2 pass'],font=('arial',12,'normal'),width=10,state="readonly")
+passes.place(x=9,y=218)
 passes.current(0)
-Label(root, text='1 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=169, y=8)
-Label(root, text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=329, y=8)
-Label(root, text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=38)
-quality= Spinbox(root, from_=1, to=63, font=('arial', 10, 'italic'), bg = '#F0F8FF', width=10)
-quality.place(x=169, y=58)
+
+quality=Spinbox(root,from_=1,to=63,font=('arial',10,'italic'),bg='#F0F8FF',width=10)
+quality.place(x=169,y=58)
 quality.insert(0,3)
-Label(root, text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=329, y=38)
+
 qualitytwo=Entry(root)
-qualitytwo.place(x=329, y=58)
-qualitytwo.insert(0, 500)
-canvas=tk.Canvas(root, width=150, height=200)
-canvas.place(x=159, y=88)
-canvas2=tk.Canvas(root, width=150, height=200)
-canvas2.place(x=329, y=88)
-Label(root, text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
-saveto=Entry(root, width=65)
-saveto.place(x=9, y=318)
-Button(root, text='Select', bg='#F0F8FF', font=('arial', 12, 'normal'), command=btnClickFunctiontwo).place(x=39, y=278)
+qualitytwo.place(x=329,y=58)
+qualitytwo.insert(0,500)
+
+canvas=tk.Canvas(root,width=150,height=200)
+canvas.place(x=159,y=88)
+
+canvas2=tk.Canvas(root,width=150,height=200)
+canvas2.place(x=329,y=88)
+
+saveto=Entry(root,width=65)
+saveto.place(x=9,y=318)
+
 root.mainloop()
