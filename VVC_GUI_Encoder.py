@@ -7,8 +7,8 @@ from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, E
 global fps
 global height
 global width
-global i,ii,fin,fn,ext,filename
-def btnClickFunctionone():
+global fin,fn,ext,filename
+def SelectButton():
 	global fps
 	global height
 	global width
@@ -30,7 +30,7 @@ def btnClickFunctionone():
 	fps= int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FPS))
 	height = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_HEIGHT))
 	width = int(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_WIDTH))
-def btnClickFunction():
+def EncodeButton():
 	global ii
 	prst=preset.get()
 	pss=passes.get()
@@ -40,7 +40,7 @@ def btnClickFunction():
 	if pss == "1 pass": 
 		os.system("vvencapp.exe --preset "+prst+" -i "+fin+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+"  -q "+quality.get()+" -o "+fin+".266")
 	if pss == "2 pass": 
-		os.system("vvencapp.exe --preset "+prst+" -i "+fin+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+" --qpa 1  -p 2 -b "+qualitytwo.get()+"k -o "+fin+".266")
+		os.system("vvencapp.exe --preset "+prst+" -i "+fin+".Y4M -s "+str(width)+"x"+str(height)+" -r "+str(fps)+" --qpa 1 -p 2 -b "+qualitytwo.get()+"k -o "+fin+".266")
 	os.system("mp4box.exe -add "+fin+".266:fmt=VVC -add "+fn+"."+ext+".m4a -new "+fin+"_266.mp4")
 	os.remove(filename+".266")
 	os.system("ffmpeg_vvceasy.exe -y -i "+fin+"_266.mp4 -vf 'thumbnail' -frames:v 1  "+fin+"_266.jpg")
@@ -56,13 +56,13 @@ def btnClickFunction():
 	os.remove(fn+"."+ext+".m4a")
 def btnClickFunctiontwo():
 	print('clicked')
-root = Tk()
+root=Tk()
 root.geometry('500x350')
 root.configure(background='#F0F8FF')
 root.title('VVC GUI Encoder')
 
-Button(root,text='Encode',bg='#F0F8FF',font=('arial',12,'bold'),command=btnClickFunction).place(x=409,y=308)
-Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=btnClickFunctionone).place(x=39,y=68)
+Button(root,text='Encode',bg='#F0F8FF',font=('arial',12,'bold'),command=EncodeButton).place(x=409,y=308)
+Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=SelectButton).place(x=39,y=68)
 Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=btnClickFunctiontwo).place(x=39,y=278)
 
 Label(root,text='Select Video', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=8)
@@ -77,7 +77,10 @@ Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=
 videoselect=Entry(root)
 videoselect.place(x=9,y=38)
 
-preset=ttk.Combobox(root, values=['faster', 'fast', 'medium', 'slow', 'slower'],font=('arial',12,'normal'),width=10,state ="readonly")
+saveto=Entry(root,width=65)
+saveto.place(x=9,y=318)
+
+preset=ttk.Combobox(root, values=['faster','fast','medium','slow','slower'],font=('arial',12,'normal'),width=10,state ="readonly")
 preset.place(x=9,y=148)
 preset.current(1)
 
@@ -98,8 +101,5 @@ canvas.place(x=159,y=88)
 
 canvas2=tk.Canvas(root,width=150,height=200)
 canvas2.place(x=329,y=88)
-
-saveto=Entry(root,width=65)
-saveto.place(x=9,y=318)
 
 root.mainloop()
