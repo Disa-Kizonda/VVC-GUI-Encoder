@@ -1,7 +1,5 @@
 # VVC GUI Encoder
 
-**At the moment you can't change the save directory of the file, I'll fix it later**
-
 ## 1. Install requirements (opencv_python, Pillow)
 > pip install -r requirements.txt
 ## 2. Download all required files (exhale.exe, ffmpeg_vvceasy.exe, mp4box.exe, vvencapp.exe) and put the files into the same folder where .py file is
