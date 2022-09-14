@@ -1,6 +1,6 @@
 # VVC GUI Encoder
 
-## 1. Install requirements (opencv_python, Pillow)
+## 1. Install requirements (Pillow)
 > pip install -r requirements.txt
 ## 2. Download all required files (exhale.exe, ffmpeg_vvceasy.exe, mp4box.exe, vvencapp.exe) and put the files into the same folder where .py file is
 > https://gitlab.com/ecodis/exhale
