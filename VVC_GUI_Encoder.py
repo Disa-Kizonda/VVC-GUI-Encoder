@@ -5,22 +5,21 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, END
 def SelectButton():
-	global fps,height,width,i,fn,ext,filename
+	global fps,height,width,i,filename
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
 	fps=str(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FPS))
 	height=str(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_HEIGHT))
 	width=str(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_WIDTH))
-	fn,ext=os.path.basename(filename).rsplit('.',1)
-	fs1.config(text = 'Size(Mb): '+str(round(os.path.getsize(filename)/(1024*1024),2)))
-	os.system('ffmpeg_vvceasy.exe -y -i '+'"'+filename+'"'+' -vf thumbnail -frames:v 1 temp.jpg')
-	imgone=   Image.open('temp.jpg')
+	fs1.config(text = 'Size(Mb): '+str(round(os.path.getsize(filename)/1048576,2)))
+	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -vf thumbnail -frames:v 1 temp.jpg')
+	imgone=Image.open('temp.jpg')
 	if imgone.size[0] >= imgone.size[1]:
-		wpercent = (180/float(imgone.size[0]))
-		hsize = int((float(imgone.size[1])*float(wpercent)))
+		wpercent=180/imgone.size[0]
+		hsize=int(imgone.size[1]*wpercent)
 		i=ImageTk.PhotoImage(imgone.resize((180,hsize)))
 	else:
-		wpercent = (200/float(imgone.size[1]))
-		wsize = int((float(imgone.size[0])*float(wpercent)))
+		wpercent=200/imgone.size[1]
+		wsize=int(imgone.size[0]*wpercent)
 		i=ImageTk.PhotoImage(imgone.resize((wsize,200)))
 	canvas.create_image(0, 0, anchor='nw', image=i)
 	os.remove('temp.jpg')
@@ -28,13 +27,12 @@ def SelectButton():
 	videoselect.insert(0,filename)
 	saveto.delete(0,END)
 	saveto.insert(0,filename+"_266.mp4")
-	
 def EncodeButton():
 	global ii
-	os.system("ffmpeg_vvceasy.exe -i "+'"'+filename+'"'+" -q:a 0 -map a temp.wav")
+	os.system('ffmpeg_vvceasy.exe -i "'+filename+'" -q:a 0 -map a temp.wav')
 	os.system("exhale.exe c temp.wav temp.m4a") 
 	os.remove("temp.wav")
-	os.system("ffmpeg_vvceasy.exe -y -i "+'"'+filename+'"'+" -pix_fmt yuv420p -strict -1 temp.Y4M")
+	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p -strict -1 temp.Y4M')
 	if passes.get() == "1 pass": 
 		os.system("vvencapp.exe --preset "+preset.get()+" -i temp.Y4M -s "+width+"x"+height+" -r "+fps+"  -q "+quality.get()+" -o temp.266")
 	if passes.get() == "2 pass": 
@@ -45,22 +43,23 @@ def EncodeButton():
 	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add temp.jpg -new "+'"'+saveto.get()+'"')
 	imgtwo=Image.open('temp.jpg')
 	if imgtwo.size[0] >= imgtwo.size[1]:
-		wpercent = (180/float(imgtwo.size[0]))
-		hsize = int((float(imgtwo.size[1])*float(wpercent)))
+		wpercent=180/imgtwo.size[0]
+		hsize=int(imgtwo.size[1]*wpercent)
 		ii=ImageTk.PhotoImage(imgtwo.resize((180,hsize)))
 	else:
-		wpercent = (200/float(imgtwo.size[1]))
-		wsize = int((float(imgtwo.size[0])*float(wpercent)))
+		wpercent=200/imgtwo.size[1]
+		wsize=int(imgtwo.size[0]*wpercent)
 		ii=ImageTk.PhotoImage(imgtwo.resize((wsize,200)))
 	canvas.create_image(180, 0, anchor='nw', image=ii)
 	os.remove("temp.Y4M")
 	os.remove("temp.m4a")
 	os.remove("temp.jpg")
-	fs2.config(text = 'Size(Mb): '+str(round(os.path.getsize(saveto.get())/(1024*1024),2)))
+	fs2.config(text = 'Size(Mb): '+str(round(os.path.getsize(saveto.get())/1048576,2)))
 def btnClickFunctiontwo():
+	fn=os.path.basename(filename).rsplit('.',1)
 	data = [("mp4","*.mp4")]
 	saveto.delete(0,END)
-	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn+".mp4_266")))
+	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4_266")))
 root=Tk()
 root.geometry('500x350')
 root.configure(background='#F0F8FF')
