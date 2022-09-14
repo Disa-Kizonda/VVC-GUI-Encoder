@@ -1,5 +1,5 @@
 import tkinter as tk
-import os, cv2
+import os
 from PIL import Image,  ImageTk
 from tkinter import ttk
 from tkinter import filedialog as fd
@@ -7,9 +7,6 @@ from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, E
 def SelectButton():
 	global fps,height,width,i,filename
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
-	fps=str(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FPS))
-	height=str(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_HEIGHT))
-	width=str(cv2.VideoCapture(filename).get(cv2.CAP_PROP_FRAME_WIDTH))
 	fs1.config(text = 'Size(Mb): '+str(round(os.path.getsize(filename)/1048576,2)))
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -vf thumbnail -frames:v 1 temp.jpg')
 	imgone=Image.open('temp.jpg')
@@ -32,11 +29,10 @@ def EncodeButton():
 	os.system('ffmpeg_vvceasy.exe -i "'+filename+'" -q:a 0 -map a temp.wav')
 	os.system("exhale.exe c temp.wav temp.m4a") 
 	os.remove("temp.wav")
-	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p -strict -1 temp.Y4M')
 	if passes.get() == "1 pass": 
-		os.system("vvencapp.exe --preset "+preset.get()+" -i temp.Y4M -s "+width+"x"+height+" -r "+fps+"  -q "+quality.get()+" -o temp.266")
+		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p -f yuv4mpegpipe - | vvencapp.exe --y4m -i - --preset '+preset.get()+' -q '+quality.get()+' -o temp.266')
 	if passes.get() == "2 pass": 
-		os.system("vvencapp.exe --preset "+preset.get()+" -i temp.Y4M -s "+width+"x"+height+" -r "+fps+" --qpa 1 -p 2 -b "+qualitytwo.get()+"k -o temp.266")
+		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p -f yuv4mpegpipe - | vvencapp.exe --y4m -i - --preset '+preset.get()+' --qpa 1 -p 2 -b '+qualitytwo.get()+'k -o temp.266')
 	os.system("mp4box.exe -add temp.266:fmt=VVC -add temp.m4a -new "+'"'+saveto.get()+'"')
 	os.remove("temp.266")
 	os.system("ffmpeg_vvceasy.exe -y -i "+'"'+saveto.get()+'"'+" -vf 'thumbnail' -frames:v 1  temp.jpg")
@@ -51,7 +47,6 @@ def EncodeButton():
 		wsize=int(imgtwo.size[0]*wpercent)
 		ii=ImageTk.PhotoImage(imgtwo.resize((wsize,200)))
 	canvas.create_image(180, 0, anchor='nw', image=ii)
-	os.remove("temp.Y4M")
 	os.remove("temp.m4a")
 	os.remove("temp.jpg")
 	fs2.config(text = 'Size(Mb): '+str(round(os.path.getsize(saveto.get())/1048576,2)))
