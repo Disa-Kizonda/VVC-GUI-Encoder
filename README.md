@@ -1,5 +1,5 @@
 # VVC GUI Encoder
-
+**two pass temporary broken**
 ## 1. Install requirements (Pillow)
 > pip install Pillow
 ## 2. Download all required files (exhale.exe, ffmpeg_vvceasy.exe, mp4box.exe, vvencapp.exe) and put the files into the same folder where .py file is
