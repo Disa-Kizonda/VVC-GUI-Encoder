@@ -33,13 +33,14 @@ def EncodeButton():
 	if passes.get() == "2 pass": 
 		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p temp.y4m')
 		os.system('vvencapp.exe --y4m -i temp.y4m --preset '+preset.get()+' --qpa 1 -p 2 -b '+qualitytwo.get()+'k -o temp.266')
+		os.remove('temp.y4m')
 	if os.path.exists('temp.wav'):
 		os.remove('temp.wav')
 		os.system('mp4box.exe -add temp.266:fmt=VVC -add temp.m4a -new "'+saveto.get()+'"')
 		os.remove('temp.m4a')
 	else:
 		os.system("mp4box.exe -add temp.266:fmt=VVC -new "+'"'+saveto.get()+'"')
-	os.remove("temp.266")
+	os.remove('temp.266')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+saveto.get()+'" -vf "thumbnail" -frames:v 1 temp.jpg')
 	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add temp.jpg -new "+'"'+saveto.get()+'"')
 	imgtwo=Image.open('temp.jpg')
