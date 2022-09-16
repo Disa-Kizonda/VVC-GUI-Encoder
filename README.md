@@ -18,3 +18,4 @@
 ![image](https://user-images.githubusercontent.com/53359732/189936043-81ed36a0-378e-42bf-9ab2-b65e7adccdf2.png)
 
 ![visitor badge](https://visitor-badge.glitch.me/badge?page_id=DisaKzionda.VVC-GUI-Encoder)
+![downloads bagdge](https://img.shields.io/github/downloads/DisaKzionda/VVC-GUI-Encoder/total)
