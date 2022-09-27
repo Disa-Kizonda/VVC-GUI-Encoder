@@ -21,7 +21,10 @@ def SelectButton():
 def EncodeButton():
 	global ii
 	os.system('ffmpeg_vvceasy.exe -i "'+filename+'" -q:a 0 -map a temp.wav')
-	os.system('exhale.exe c temp.wav temp.m4a') 
+	if audiomode.get() == "bigger size":
+		os.system('exhale.exe '+audioquality.get()+' temp.wav temp.m4a') 
+	if audiomode.get() == "smaller size":
+		os.system('exhale.exe '+audioquality2.get()+' temp.wav temp.m4a')
 	if passes.get() == "1 pass": 
 		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p -f yuv4mpegpipe - | vvencapp.exe --y4m -i - --preset '+preset.get()+' -q '+quality.get()+' -o temp.266')
 	if passes.get() == "2 pass": 
@@ -48,6 +51,7 @@ def btnClickFunctiontwo():
 	data = [("mp4","*.mp4")]
 	saveto.delete(0,END)
 	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4_266")))
+
 root=Tk()
 root.geometry('500x350')
 root.configure(background='#F0F8FF')
@@ -61,9 +65,11 @@ Label(root,text='Select Video', bg='#F0F8FF', font=('arial', 12, 'normal')).plac
 Label(root,text='Preset', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=118)
 Label(root,text='1 pass / 2 pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=188)
 Label(root,text='1 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=169, y=8)
-Label(root,text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=329, y=8)
+Label(root,text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=289, y=8)
+Label(root,text='Audio Quality', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=379, y=8)
 Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=28)
-Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=329, y=28)
+Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=289, y=28)
+Label(root,text='or', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=409, y=54)
 Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
 
 fs1=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
@@ -81,6 +87,18 @@ preset=ttk.Combobox(root, values=['faster','fast','medium','slow','slower'],font
 preset.place(x=9,y=148)
 preset.current(1)
 
+audiomode=ttk.Combobox(root, values=['bigger size','smaller size'],font=('arial',8,'normal'),width=10,state ="readonly")
+audiomode.place(x=379,y=30)
+audiomode.current(1)
+
+audioquality=ttk.Combobox(root, values=['1','2','3','4','5','6','7','8','9'],font=('arial',8,'normal'),width=1,state ="readonly")
+audioquality.place(x=379,y=54)
+audioquality.current(3)
+
+audioquality2=ttk.Combobox(root, values=['a','b','c','d','e','f','g'],font=('arial',8,'normal'),width=1,state ="readonly")
+audioquality2.place(x=429,y=54)
+audioquality2.current(2)
+
 passes=ttk.Combobox(root,values=['1 pass', '2 pass'],font=('arial',12,'normal'),width=6,state="readonly")
 passes.place(x=9,y=218)
 passes.current(0)
@@ -89,8 +107,8 @@ quality=Spinbox(root,from_=1,to=63,font=('arial',10,'italic'),bg='#F0F8FF',width
 quality.place(x=169,y=48)
 quality.insert(0,3)
 
-qualitytwo=Entry(root)
-qualitytwo.place(x=329,y=48)
+qualitytwo=Entry(root,width=10)
+qualitytwo.place(x=289,y=48)
 qualitytwo.insert(0,500)
 
 canvas=tk.Canvas(root,width=360,height=200)
