@@ -20,11 +20,9 @@ def SelectButton():
 	saveto.insert(0,filename+"_266.mp4")
 def EncodeButton():
 	global ii
-	os.system('ffmpeg_vvceasy.exe -i "'+filename+'" -q:a 0 -map a temp.wav')
-	if audiomode.get() == "bigger size":
-		os.system('exhale.exe '+audioquality.get()+' temp.wav temp.m4a') 
-	if audiomode.get() == "smaller size":
-		os.system('exhale.exe '+audioquality2.get()+' temp.wav temp.m4a')
+	audn = '{: .0f}'.format(audioquality.get())
+	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -q:a 0 -map a temp.wav')
+	os.system('exhale.exe '+audv[int(audn)-1]+' temp.wav temp.m4a') 
 	if passes.get() == "1 pass": 
 		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p -f yuv4mpegpipe - | vvencapp.exe --y4m -i - --preset '+preset.get()+' -q '+quality.get()+' -o temp.266')
 	if passes.get() == "2 pass": 
@@ -51,7 +49,11 @@ def btnClickFunctiontwo():
 	data = [("mp4","*.mp4")]
 	saveto.delete(0,END)
 	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4_266")))
-
+def audioQ(event):
+	audn = '{: .0f}'.format(audioquality.get())
+	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
+audv=['a','b','1','c','2','d','3','e','f','4','g','5','6','7','8','9']
+audvn=['50','62','64','74','80','86','96','98','110','112','122','128','144','160','176','192']
 root=Tk()
 root.geometry('500x350')
 root.configure(background='#F0F8FF')
@@ -69,13 +71,15 @@ Label(root,text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=28
 Label(root,text='Audio Quality', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=379, y=8)
 Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=28)
 Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=289, y=28)
-Label(root,text='or', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=409, y=54)
 Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
 
 fs1=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
 fs1.place(x=129, y=288)
 fs2=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
 fs2.place(x=310, y=288)
+
+audqual=Label(root,text='Quality (kb): 96', bg='#F0F8FF', font=('arial', 10, 'italic'))
+audqual.place(x=379, y=28)
 
 videoselect=Entry(root)
 videoselect.place(x=9,y=38)
@@ -87,17 +91,9 @@ preset=ttk.Combobox(root, values=['faster','fast','medium','slow','slower'],font
 preset.place(x=9,y=148)
 preset.current(1)
 
-audiomode=ttk.Combobox(root, values=['bigger size','smaller size'],font=('arial',8,'normal'),width=10,state ="readonly")
-audiomode.place(x=379,y=30)
-audiomode.current(1)
-
-audioquality=ttk.Combobox(root, values=['1','2','3','4','5','6','7','8','9'],font=('arial',8,'normal'),width=1,state ="readonly")
-audioquality.place(x=379,y=54)
-audioquality.current(3)
-
-audioquality2=ttk.Combobox(root, values=['a','b','c','d','e','f','g'],font=('arial',8,'normal'),width=1,state ="readonly")
-audioquality2.place(x=429,y=54)
-audioquality2.current(2)
+audioquality=ttk.Scale(root, from_=1, to=16,command=audioQ)
+audioquality.place(x=379,y=48)
+audioquality.set(8)
 
 passes=ttk.Combobox(root,values=['1 pass', '2 pass'],font=('arial',12,'normal'),width=6,state="readonly")
 passes.place(x=9,y=218)
