@@ -52,6 +52,10 @@ def btnClickFunctiontwo():
 def audioQ(event):
 	audn = '{: .0f}'.format(audioquality.get())
 	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
+def btnOpenVid():
+	os.popen(videoselect.get())
+def btnOpenVid2():
+	os.popen(saveto.get())
 audv=['a','b','1','c','2','d','3','e','f','4','g','5','6','7','8','9']
 audvn=['50','62','64','74','80','86','96','98','110','112','122','128','144','160','176','192']
 root=Tk()
@@ -62,6 +66,8 @@ root.title('VVC GUI Encoder')
 Button(root,text='Encode',bg='#F0F8FF',font=('arial',12,'bold'),command=EncodeButton).place(x=409,y=308)
 Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=SelectButton).place(x=39,y=68)
 Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=btnClickFunctiontwo).place(x=39,y=278)
+Button(root,text='Open',bg='#F0F8FF',font=('arial',7,'italic'),command=btnOpenVid).place(x=259,y=280)
+Button(root,text='Open',bg='#F0F8FF',font=('arial',7,'italic'),command=btnOpenVid2).place(x=459,y=280)
 
 Label(root,text='Select Video', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=8)
 Label(root,text='Preset', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=118)
