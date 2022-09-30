@@ -11,7 +11,7 @@
 
 > https://github.com/fraunhoferhhi/vvenc
 
-**Or you can download Ready to Use Pack here: https://github.com/DisaKzionda/VVC-GUI-Encoder/releases**
+**Or you can download Ready to Use Pack here: https://github.com/Disa-Kizonda/VVC-GUI-Encoder/releases**
 
 ## 3. Open VVC_GUI_Encoder.py and that's it
 
