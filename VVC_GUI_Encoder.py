@@ -1,11 +1,9 @@
-import tkinter as tk
-import os
-from PIL import Image,  ImageTk
-from tkinter import ttk
+import os,tkinter
+from PIL import Image, ImageTk
 from tkinter import filedialog as fd
-from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, END
+from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, END, ttk
 def SelectButton():
-	global fps,height,width,i,filename
+	global i,filename
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
 	fs1.config(text = 'Size(Mb): '+str(round(os.path.getsize(filename)/1048576,2)))
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -vf thumbnail -frames:v 1 temp.jpg')
@@ -52,10 +50,8 @@ def btnClickFunctiontwo():
 def audioQ(event):
 	audn = '{: .0f}'.format(audioquality.get())
 	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
-def btnOpenVid():
-	os.popen(videoselect.get())
-def btnOpenVid2():
-	os.popen(saveto.get())
+def btnOpenVid(): os.popen(videoselect.get())
+def btnOpenVid2(): os.popen(saveto.get())
 audv=['a','b','1','c','2','d','3','e','f','4','g','5','6','7','8','9']
 audvn=['50','62','64','74','80','86','96','98','110','112','122','128','144','160','176','192']
 root=Tk()
@@ -79,9 +75,9 @@ Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).pl
 Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=289, y=28)
 Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
 
-fs1=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
+fs1=Label(root,text='Size(Mb): 0', bg='#F0F8FF', font=('arial', 10, 'italic'))
 fs1.place(x=129, y=288)
-fs2=Label(root,text='Size(Mb):', bg='#F0F8FF', font=('arial', 10, 'italic'))
+fs2=Label(root,text='Size(Mb): 0', bg='#F0F8FF', font=('arial', 10, 'italic'))
 fs2.place(x=310, y=288)
 
 audqual=Label(root,text='Quality (kb): 96', bg='#F0F8FF', font=('arial', 10, 'italic'))
@@ -113,7 +109,7 @@ qualitytwo=Entry(root,width=10)
 qualitytwo.place(x=289,y=48)
 qualitytwo.insert(0,500)
 
-canvas=tk.Canvas(root,width=360,height=200)
+canvas=Canvas(root,width=360,height=200)
 canvas.place(x=129,y=78)
 
 root.mainloop()
