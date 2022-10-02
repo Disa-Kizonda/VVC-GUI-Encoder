@@ -15,7 +15,7 @@
 
 ## 3. Open VVC_GUI_Encoder.py and that's it
 
-![image](https://user-images.githubusercontent.com/53359732/189936043-81ed36a0-378e-42bf-9ab2-b65e7adccdf2.png)
+![image](https://user-images.githubusercontent.com/53359732/193442682-c20a71c7-b91c-4c2a-938f-b0ed968a7364.png)
 
 ![visitor badge](https://visitor-badge.glitch.me/badge?page_id=DisaKzionda.VVC-GUI-Encoder)
 ![downloads bagdge](https://img.shields.io/github/downloads/DisaKzionda/VVC-GUI-Encoder/total)
