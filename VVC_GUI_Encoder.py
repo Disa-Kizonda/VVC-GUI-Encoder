@@ -35,12 +35,16 @@ def EncodeButton():
 		os.system("mp4box.exe -add temp.266:fmt=VVC -new "+'"'+saveto.get()+'"')
 	os.remove('temp.266')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+saveto.get()+'" -vf "thumbnail" -frames:v 1 temp.jpg')
-	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add temp.jpg -new "+'"'+saveto.get()+'"')
 	imgtwo=Image.open('temp.jpg')
+	imthum=imgtwo
+	imthum.thumbnail((512,512))	
+	imthum.save("thumbnail.jpg")
+	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add thumbnail.jpg -new "+'"'+saveto.get()+'"')
 	imgtwo.thumbnail((180,200))
 	ii=ImageTk.PhotoImage(imgtwo)
 	canvas.create_image(180, 0, anchor='nw', image=ii)
 	os.remove("temp.jpg")
+	os.remove("thumbnail.jpg")
 	fs2.config(text=f'Size(Mb): {os.path.getsize(saveto.get())/1048576:.2f}')
 def btnClickFunctiontwo():
 	fn=os.path.basename(filename).rsplit('.',1)
