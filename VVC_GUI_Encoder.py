@@ -39,10 +39,10 @@ def EncodeButton():
 	imthum=imgtwo
 	imthum.thumbnail((512,512))	
 	imthum.save("thumbnail.jpg")
-	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add thumbnail.jpg -new "+'"'+saveto.get()+'"')
 	imgtwo.thumbnail((180,200))
 	ii=ImageTk.PhotoImage(imgtwo)
 	canvas.create_image(180, 0, anchor='nw', image=ii)
+	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add thumbnail.jpg -new "+'"'+saveto.get()+'"')
 	os.remove("temp.jpg")
 	os.remove("thumbnail.jpg")
 	fs2.config(text=f'Size(Mb): {os.path.getsize(saveto.get())/1048576:.2f}')
