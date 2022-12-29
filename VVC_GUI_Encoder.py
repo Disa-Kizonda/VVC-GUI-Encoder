@@ -5,7 +5,7 @@ from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, E
 def SelectButton():
 	global i,filename
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
-	fs1.config(text = 'Size(Mb): '+str(round(os.path.getsize(filename)/1048576,2)))
+	fs1.config(text=f'Size(Mb): {os.path.getsize(filename)/1048576:.2f}')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -vf thumbnail -frames:v 1 temp.jpg')
 	imgone=Image.open('temp.jpg')
 	imgone.thumbnail((180,200))
@@ -41,7 +41,7 @@ def EncodeButton():
 	ii=ImageTk.PhotoImage(imgtwo)
 	canvas.create_image(180, 0, anchor='nw', image=ii)
 	os.remove("temp.jpg")
-	fs2.config(text = 'Size(Mb): '+str(round(os.path.getsize(saveto.get())/1048576,2)))
+	fs2.config(text=f'Size(Mb): {os.path.getsize(saveto.get())/1048576:.2f}')
 def btnClickFunctiontwo():
 	fn=os.path.basename(filename).rsplit('.',1)
 	data = [("mp4","*.mp4")]
