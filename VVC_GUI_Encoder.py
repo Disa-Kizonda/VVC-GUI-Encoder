@@ -2,6 +2,7 @@ import os,tkinter
 from PIL import Image, ImageTk
 from tkinter import filedialog as fd
 from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, END, ttk
+
 def SelectButton():
 	global i,filename
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
@@ -12,6 +13,7 @@ def SelectButton():
 	i=ImageTk.PhotoImage(imgone)
 	canvas.create_image(0, 0, anchor='nw', image=i)
 	os.remove('temp.jpg')
+	
 	videoselect.delete(0,END)
 	videoselect.insert(0,filename)
 	saveto.delete(0,END)
@@ -56,10 +58,64 @@ def audioQ(event):
 	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
 def btnOpenVid(): os.popen(videoselect.get())
 def btnOpenVid2(): os.popen(saveto.get())
+def on_canvas_click(event):open_window()
+def open_window():
+    frame = 0
+    new_window = tkinter.Toplevel()
+    new_window.geometry('1000x560')
+    new_window.title('Comparison')
+    canvas2 = Canvas(new_window, width=1000, height=500)
+    canvas2.place(x=0, y=50)
+    i = None
+    i2 = None
+    def update_canvas():
+        nonlocal frame, i, i2
+        if i is not None:
+            canvas2.delete(i)
+        if i2 is not None:
+            canvas2.delete(i2)
+        def update_image(videoname, side):
+            nonlocal i, i2
+            os.system(f'ffmpeg_vvceasy.exe -y -i "{videoname}" -vf "select=eq(n\,{frame})" -frames:v 1 temp.jpg')
+            image = Image.open('temp.jpg')
+            image.thumbnail((500, 500))
+            if side == "left":
+                i = ImageTk.PhotoImage(image)
+                canvas2.create_image(0, 0, anchor='nw', image=i)
+            elif side == "right":
+                i2 = ImageTk.PhotoImage(image)
+                canvas2.create_image(500, 0, anchor='nw', image=i2)
+            os.remove('temp.jpg')
+        update_image(videoselect.get(), "left")
+        update_image(saveto.get(), "right")
+    def increase_frame():
+        nonlocal frame
+        frame += 1
+        update_canvas()
+    def decreace_frame():
+        nonlocal frame
+        frame -= 1
+        if frame < 0:
+            frame = 0
+        update_canvas()
+    #def increase_image():    
+    #def decrease_image():
+    button1 = Button(new_window, text='<--', command=decreace_frame)
+    button1.place(x=50, y=10)
+    button2 = Button(new_window, text='-->', command=increase_frame)
+    button2.place(x=150, y=10)
+    #button3 = Button(new_window, text=' + ', command=increase_image)
+    #button3.place(x=250, y=10)
+    #button4 = Button(new_window, text=' - ', command=decrease_image)
+    #button4.place(x=300, y=10)
+    update_canvas()
+    new_window.mainloop()
+
 audv=['a','b','1','c','2','d','3','e','f','4','g','5','6','7','8','9']
 audvn=['50','62','64','74','80','86','96','98','110','112','122','128','144','160','176','192']
 root=Tk()
 root.geometry('500x350')
+root.resizable(False, False)
 root.configure(background='#F0F8FF')
 root.title('VVC GUI Encoder')
 
@@ -68,6 +124,7 @@ Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=Select
 Button(root,text='Select',bg='#F0F8FF',font=('arial',12,'normal'),command=btnClickFunctiontwo).place(x=39,y=278)
 Button(root,text='Open',bg='#F0F8FF',font=('arial',7,'italic'),command=btnOpenVid).place(x=259,y=280)
 Button(root,text='Open',bg='#F0F8FF',font=('arial',7,'italic'),command=btnOpenVid2).place(x=459,y=280)
+
 
 Label(root,text='Select Video', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=8)
 Label(root,text='Preset', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=9, y=118)
@@ -115,5 +172,6 @@ qualitytwo.insert(0,500)
 
 canvas=Canvas(root,width=360,height=200)
 canvas.place(x=129,y=78)
+canvas.bind('<Button-3>', on_canvas_click)
 
 root.mainloop()
