@@ -13,7 +13,6 @@ def SelectButton():
 	i=ImageTk.PhotoImage(imgone)
 	canvas.create_image(0, 0, anchor='nw', image=i)
 	os.remove('temp.jpg')
-	
 	videoselect.delete(0,END)
 	videoselect.insert(0,filename)
 	saveto.delete(0,END)
@@ -68,6 +67,7 @@ def open_window():
     canvas2.place(x=0, y=50)
     i = None
     i2 = None
+    zoom=0
     def update_canvas():
         nonlocal frame, i, i2
         if i is not None:
@@ -75,13 +75,16 @@ def open_window():
         if i2 is not None:
             canvas2.delete(i2)
         def update_image(videoname, side):
-            nonlocal i, i2
+            nonlocal i, i2,zoom
             os.system(f'ffmpeg_vvceasy.exe -y -i "{videoname}" -vf "select=eq(n\,{frame})" -frames:v 1 temp.jpg')
             image = Image.open('temp.jpg')
             image.thumbnail((500, 500))
+            width, height = image.size
+            image = image.resize((width+zoom, height+zoom), Image.ANTIALIAS)			
             if side == "left":
                 i = ImageTk.PhotoImage(image)
                 canvas2.create_image(0, 0, anchor='nw', image=i)
+				
             elif side == "right":
                 i2 = ImageTk.PhotoImage(image)
                 canvas2.create_image(500, 0, anchor='nw', image=i2)
@@ -98,16 +101,22 @@ def open_window():
         if frame < 0:
             frame = 0
         update_canvas()
-    #def increase_image():    
-    #def decrease_image():
+    def increase_image():    
+        nonlocal zoom
+        zoom=zoom+15
+        update_canvas()
+    def decrease_image():
+        nonlocal zoom
+        zoom=zoom-15
+        update_canvas()
     button1 = Button(new_window, text='<--', command=decreace_frame)
     button1.place(x=50, y=10)
     button2 = Button(new_window, text='-->', command=increase_frame)
     button2.place(x=150, y=10)
-    #button3 = Button(new_window, text=' + ', command=increase_image)
-    #button3.place(x=250, y=10)
-    #button4 = Button(new_window, text=' - ', command=decrease_image)
-    #button4.place(x=300, y=10)
+    button3 = Button(new_window, text=' + ', command=increase_image)
+    button3.place(x=250, y=10)
+    button4 = Button(new_window, text=' - ', command=decrease_image)
+    button4.place(x=300, y=10)
     update_canvas()
     new_window.mainloop()
 
