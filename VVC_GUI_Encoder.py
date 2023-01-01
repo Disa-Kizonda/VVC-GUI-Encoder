@@ -59,66 +59,72 @@ def btnOpenVid(): os.popen(videoselect.get())
 def btnOpenVid2(): os.popen(saveto.get())
 def on_canvas_click(event):open_window()
 def open_window():
-    frame = 0
-    new_window = tkinter.Toplevel()
-    new_window.geometry('1000x560')
-    new_window.title('Comparison')
-    canvas2 = Canvas(new_window, width=1000, height=500)
-    canvas2.place(x=0, y=50)
-    i = None
-    i2 = None
-    zoom=0
-    def update_canvas():
-        nonlocal frame, i, i2
-        if i is not None:
-            canvas2.delete(i)
-        if i2 is not None:
-            canvas2.delete(i2)
-        def update_image(videoname, side):
-            nonlocal i, i2,zoom
-            os.system(f'ffmpeg_vvceasy.exe -y -i "{videoname}" -vf "select=eq(n\,{frame})" -frames:v 1 temp.jpg')
-            image = Image.open('temp.jpg')
-            image.thumbnail((500, 500))
-            width, height = image.size
-            image = image.resize((width+zoom, height+zoom), Image.ANTIALIAS)			
-            if side == "left":
-                i = ImageTk.PhotoImage(image)
-                canvas2.create_image(0, 0, anchor='nw', image=i)
-				
-            elif side == "right":
-                i2 = ImageTk.PhotoImage(image)
-                canvas2.create_image(500, 0, anchor='nw', image=i2)
-            os.remove('temp.jpg')
-        update_image(videoselect.get(), "left")
-        update_image(saveto.get(), "right")
-    def increase_frame():
-        nonlocal frame
-        frame += 1
-        update_canvas()
-    def decreace_frame():
-        nonlocal frame
-        frame -= 1
-        if frame < 0:
-            frame = 0
-        update_canvas()
-    def increase_image():    
-        nonlocal zoom
-        zoom=zoom+15
-        update_canvas()
-    def decrease_image():
-        nonlocal zoom
-        zoom=zoom-15
-        update_canvas()
-    button1 = Button(new_window, text='<--', command=decreace_frame)
-    button1.place(x=50, y=10)
-    button2 = Button(new_window, text='-->', command=increase_frame)
-    button2.place(x=150, y=10)
-    button3 = Button(new_window, text=' + ', command=increase_image)
-    button3.place(x=250, y=10)
-    button4 = Button(new_window, text=' - ', command=decrease_image)
-    button4.place(x=300, y=10)
-    update_canvas()
-    new_window.mainloop()
+	frame = 0
+	new_window = tkinter.Toplevel()
+	new_window.geometry('1000x560')
+	new_window.title('Comparison')
+	canvas2 = Canvas(new_window, width=1000, height=500)
+	canvas2.place(x=0, y=50)
+	i = None
+	i2 = None
+	zoom=0
+	def update_canvas():
+		nonlocal frame, i, i2
+		if i is not None:
+			canvas2.delete(i)
+		if i2 is not None:
+			canvas2.delete(i2)
+		def update_image(videoname, side):
+			nonlocal i, i2,zoom
+			os.system(f'ffmpeg_vvceasy.exe -y -i "{videoname}" -vf "select=eq(n\,{frame})" -frames:v 1 temp.jpg')
+			image = Image.open('temp.jpg')
+			image.thumbnail((500, 500))
+			width, height = image.size
+			widthoriginal=width
+			if width+zoom>=widthoriginal:
+				image = image.resize((width+zoom, height+zoom), Image.ANTIALIAS)	
+				if side == "left":
+					i = ImageTk.PhotoImage(image)
+					canvas2.create_image(0, 0, anchor='nw', image=i)
+				elif side == "right":
+					i2 = ImageTk.PhotoImage(image)
+					if width+zoom<=500:canvas2.create_image(width+zoom, 0, anchor='nw', image=i2)
+					if width+zoom>=500:canvas2.create_image(500, 0, anchor='nw', image=i2)
+			else:
+				if side == "left":
+					i = ImageTk.PhotoImage(image)
+					canvas2.create_image(0, 0, anchor='nw', image=i)
+				elif side == "right":
+					i2 = ImageTk.PhotoImage(image)
+					canvas2.create_image(width, 0, anchor='nw', image=i2)
+				zoom=0
+			os.remove('temp.jpg')
+		update_image(videoselect.get(), "left")
+		update_image(saveto.get(), "right")
+	def update(act):
+		nonlocal frame
+		nonlocal zoom
+		if act == "inc_f":
+			frame += 1
+		elif act == "dec_f":
+			frame -= 1
+			if frame < 0:
+				frame = 0
+		elif act == "inc_z":
+			zoom += 15
+		elif act == "dec_z":
+			zoom -= 15
+		update_canvas()
+	b1 = Button(new_window, text='<--',command=lambda:update("dec_f"))
+	b1.place(x=50, y=10)
+	b2 = Button(new_window, text='-->',command=lambda:update("inc_f"))
+	b2.place(x=150, y=10)
+	b3 = Button(new_window, text='+',command=lambda:update("inc_z"))
+	b3.place(x=250, y=10)
+	b4 = Button(new_window, text='-',command=lambda:update("dec_z"))
+	b4.place(x=300, y=10)
+	update_canvas()
+	new_window.mainloop()
 
 audv=['a','b','1','c','2','d','3','e','f','4','g','5','6','7','8','9']
 audvn=['50','62','64','74','80','86','96','98','110','112','122','128','144','160','176','192']
