@@ -2,14 +2,12 @@
 
 ## 1. Install requirements (Pillow)
 > pip install Pillow
-## 2. Download all required files (exhale.exe, ffmpeg_vvceasy.exe, mp4box.exe, vvencapp.exe) and put the files into the same folder where .py file is
+## 2. Download all required files (exhale.exe, ffmpeg_vvceasy.exe, mp4box.exe) and put the files into the same folder where .py file is
 > https://gitlab.com/ecodis/exhale
 
 > https://github.com/MartinEesmaa/VVCEasy/blob/master/FFMPEGVVC.md
 
 > https://gpac.wp.imt.fr/downloads/
-
-> https://github.com/fraunhoferhhi/vvenc
 
 **Or you can download Ready to Use Pack here: https://github.com/Disa-Kizonda/VVC-GUI-Encoder/releases**
 
