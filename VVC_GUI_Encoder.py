@@ -25,9 +25,9 @@ def EncodeButton():
 	if passes.get() == "1 pass": 
 		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -c:v vvc -b:v 0 -qp '+quality.get()+'  -preset '+preset.get()+' temp.266')
 	if passes.get() == "2 pass": 
-		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -pix_fmt yuv420p temp.y4m')
-		os.system('vvencapp.exe --y4m -i temp.y4m --preset '+preset.get()+' --qpa 1 -p 2 -b '+qualitytwo.get()+'k -o temp.266')
-		os.remove('temp.y4m')
+		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -an -vcodec vvc -vvenc-params passes=2:pass=1:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k -f null NUL')
+		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -acodec copy -vcodec vvc -vvenc-params passes=2:pass=2:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k temp.266')
+		os.remove('temp.json')
 	if os.path.exists('temp.wav'):
 		os.remove('temp.wav')
 		os.system('mp4box.exe -add temp.266 -add temp.m4a -new "'+saveto.get()+'"')
