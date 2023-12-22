@@ -147,7 +147,7 @@ Label(root,text='1 pass / 2 pass', bg='#F0F8FF', font=('arial', 12, 'normal')).p
 Label(root,text='1 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=169, y=8)
 Label(root,text='2 Pass', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=289, y=8)
 Label(root,text='Audio Quality', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=379, y=8)
-Label(root,text='Quality (1-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=28)
+Label(root,text='Quality (0-63)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=169, y=28)
 Label(root,text='Quality (kb)', bg='#F0F8FF', font=('arial', 10, 'italic')).place(x=289, y=28)
 Label(root,text='Save as:', bg='#F0F8FF', font=('arial', 12, 'normal')).place(x=39, y=248)
 
@@ -177,7 +177,7 @@ passes=ttk.Combobox(root,values=['1 pass', '2 pass'],font=('arial',12,'normal'),
 passes.place(x=9,y=218)
 passes.current(0)
 
-quality=Spinbox(root,from_=1,to=63,font=('arial',10,'italic'),bg='#F0F8FF',width=10)
+quality=Spinbox(root,from_=0,to=63,font=('arial',10,'italic'),bg='#F0F8FF',width=10)
 quality.place(x=169,y=48)
 quality.insert(0,3)
 
