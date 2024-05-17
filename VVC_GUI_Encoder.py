@@ -23,18 +23,18 @@ def EncodeButton():
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -q:a 0 -map a temp.wav')
 	os.system('exhale.exe '+audv[int(audn)-1]+' temp.wav temp.m4a') 
 	if passes.get() == "1 pass": 
-		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -c:v vvc -b:v 0 -qp '+quality.get()+'  -preset '+preset.get()+' temp.266')
+		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -c:v vvc -b:v 0 -qp '+quality.get()+'  -preset '+preset.get()+' temp.mp4')
 	if passes.get() == "2 pass": 
 		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -an -vcodec vvc -vvenc-params passes=2:pass=1:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k -f null NUL')
-		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -acodec copy -vcodec vvc -vvenc-params passes=2:pass=2:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k temp.266')
+		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -acodec copy -vcodec vvc -vvenc-params passes=2:pass=2:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k temp.mp4')
 		os.remove('temp.json')
 	if os.path.exists('temp.wav'):
 		os.remove('temp.wav')
-		os.system('mp4box.exe -add temp.266 -add temp.m4a -new "'+saveto.get()+'"')
+		os.system('mp4box.exe -add temp.mp4 -add temp.m4a -new "'+saveto.get()+'"')
 		os.remove('temp.m4a')
 	else:
-		os.system("mp4box.exe -add temp.266 -new "+'"'+saveto.get()+'"')
-	os.remove('temp.266')
+		os.system("mp4box.exe -add temp.mp4 -new "+'"'+saveto.get()+'"')
+	os.remove('temp.mp4')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+saveto.get()+'" -vf "thumbnail" -frames:v 1 temp.jpg')
 	imgtwo=Image.open('temp.jpg')
 	imthum=imgtwo
@@ -43,7 +43,8 @@ def EncodeButton():
 	imgtwo.thumbnail((180,200))
 	ii=ImageTk.PhotoImage(imgtwo)
 	canvas.create_image(180, 0, anchor='nw', image=ii)
-	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add thumbnail.jpg -new "+'"'+saveto.get()+'"')
+	os.system ("ffmpeg_vvceasy.exe -y -i "+'"'+saveto.get()+'"'+" -i thumbnail.jpg -map 1 -map 0 -c copy -disposition:0 attached_pic "+'"'+filename+'"'+'-266.mp4')
+	os.remove(filename+"_266.mp4")
 	os.remove("temp.jpg")
 	os.remove("thumbnail.jpg")
 	fs2.config(text=f'Size(Mb): {os.path.getsize(saveto.get())/1048576:.2f}')
@@ -51,7 +52,7 @@ def btnClickFunctiontwo():
 	fn=os.path.basename(filename).rsplit('.',1)
 	data = [("mp4","*.mp4")]
 	saveto.delete(0,END)
-	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4_266")))
+	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4-266")))
 def audioQ(event):
 	audn = '{: .0f}'.format(audioquality.get())
 	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
