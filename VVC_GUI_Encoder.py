@@ -4,11 +4,8 @@ from tkinter import filedialog as fd
 from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, END, ttk
 
 def SelectButton():
-	global i,filename,fname
+	global i,filename
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
-	fname=str(filename)+"-266.mp4"
-	try: 	fs2.config(text=f'Size(Mb): {os.path.getsize(fname)/1048576:.2f}')
-	except: print("error")
 	fs1.config(text=f'Size(Mb): {os.path.getsize(filename)/1048576:.2f}')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -vf thumbnail -frames:v 1 temp.jpg')
 	imgone=Image.open('temp.jpg')
@@ -26,18 +23,18 @@ def EncodeButton():
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -q:a 0 -map a temp.wav')
 	os.system('exhale.exe '+audv[int(audn)-1]+' temp.wav temp.m4a') 
 	if passes.get() == "1 pass": 
-		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -c:v vvc -b:v 0 -qp '+quality.get()+'  -preset '+preset.get()+' temp.mp4')
+		os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -c:v vvc -b:v 0 -qp '+quality.get()+'  -preset '+preset.get()+' temp.266')
 	if passes.get() == "2 pass": 
 		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -an -vcodec vvc -vvenc-params passes=2:pass=1:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k -f null NUL')
-		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -acodec copy -vcodec vvc -vvenc-params passes=2:pass=2:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k temp.mp4')
+		os.system('ffmpeg_vvceasy.exe  -y -i "'+filename+'" -acodec copy -vcodec vvc -vvenc-params passes=2:pass=2:rcstatsfile=temp.json -preset '+preset.get()+' -b:v '+qualitytwo.get()+'k temp.266')
 		os.remove('temp.json')
 	if os.path.exists('temp.wav'):
 		os.remove('temp.wav')
-		os.system('ffmpeg_vvceasy.exe -i temp.mp4 -i temp.m4a "'+saveto.get()+'"')
+		os.system('mp4box.exe -add temp.266 -add temp.m4a -new "'+saveto.get()+'"')
 		os.remove('temp.m4a')
 	else:
-		os.system("ffmpeg_vvceasy.exe -i temp.mp4 "+'"'+saveto.get()+'"')
-	os.remove('temp.mp4')
+		os.system("mp4box.exe -add temp.266 -new "+'"'+saveto.get()+'"')
+	os.remove('temp.266')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+saveto.get()+'" -vf "thumbnail" -frames:v 1 temp.jpg')
 	imgtwo=Image.open('temp.jpg')
 	imthum=imgtwo
@@ -46,21 +43,20 @@ def EncodeButton():
 	imgtwo.thumbnail((180,200))
 	ii=ImageTk.PhotoImage(imgtwo)
 	canvas.create_image(180, 0, anchor='nw', image=ii)
-	os.system ("ffmpeg_vvceasy.exe -y -i "+'"'+saveto.get()+'"'+" -i thumbnail.jpg -map 1 -map 0 -c copy -disposition:0 attached_pic "+'"'+filename+'"'+'-266.mp4')
-	os.remove(filename+"_266.mp4")
+	os.system("mp4box.exe -add "+'"'+saveto.get()+'"'+" -add thumbnail.jpg -new "+'"'+saveto.get()+'"')
 	os.remove("temp.jpg")
 	os.remove("thumbnail.jpg")
-	fs2.config(text=f'Size(Mb): {os.path.getsize(fname)/1048576:.2f}')
+	fs2.config(text=f'Size(Mb): {os.path.getsize(saveto.get())/1048576:.2f}')
 def btnClickFunctiontwo():
 	fn=os.path.basename(filename).rsplit('.',1)
 	data = [("mp4","*.mp4")]
 	saveto.delete(0,END)
-	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4-266")))
+	saveto.insert(0,str(fd.asksaveasfilename(filetypes=data,defaultextension=data,initialfile=fn[0]+".mp4_266")))
 def audioQ(event):
 	audn = '{: .0f}'.format(audioquality.get())
 	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
 def btnOpenVid(): os.popen(videoselect.get())
-def btnOpenVid2(): os.popen('"'+filename+'"'+'-266.mp4')
+def btnOpenVid2(): os.popen(saveto.get())
 def on_canvas_click(event):open_window()
 def open_window():
 	frame = 0
@@ -86,7 +82,7 @@ def open_window():
 			width, height = image.size
 			widthoriginal=width
 			if width+zoom>=widthoriginal:
-				image = image.resize((width+zoom, height+zoom))	
+				image = image.resize((width+zoom, height+zoom), Image.ANTIALIAS)	
 				if side == "left":
 					i = ImageTk.PhotoImage(image)
 					canvas2.create_image(0, 0, anchor='nw', image=i)
@@ -104,7 +100,7 @@ def open_window():
 				zoom=0
 			os.remove('temp.jpg')
 		update_image(videoselect.get(), "left")
-		update_image(fname, "right")
+		update_image(saveto.get(), "right")
 	def update(act):
 		nonlocal frame
 		nonlocal zoom
