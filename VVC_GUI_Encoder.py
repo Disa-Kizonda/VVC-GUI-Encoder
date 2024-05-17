@@ -4,8 +4,11 @@ from tkinter import filedialog as fd
 from tkinter import Tk, Button, Canvas, Label, Entry, Spinbox, PhotoImage, NE, END, ttk
 
 def SelectButton():
-	global i,filename
+	global i,filename,fname
 	filename=str(fd.askopenfilename(title = "Select file",filetypes = (("Video","*.mp4 .ts .webm .mkv"),("All files","*.*"))))
+	fname=str(filename)+"-266.mp4"
+	try: 	fs2.config(text=f'Size(Mb): {os.path.getsize(fname)/1048576:.2f}')
+	except: print("error")
 	fs1.config(text=f'Size(Mb): {os.path.getsize(filename)/1048576:.2f}')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+filename+'" -vf thumbnail -frames:v 1 temp.jpg')
 	imgone=Image.open('temp.jpg')
@@ -30,10 +33,10 @@ def EncodeButton():
 		os.remove('temp.json')
 	if os.path.exists('temp.wav'):
 		os.remove('temp.wav')
-		os.system('mp4box.exe -add temp.mp4 -add temp.m4a -new "'+saveto.get()+'"')
+		os.system('ffmpeg_vvceasy.exe -i temp.mp4 -i temp.m4a "'+saveto.get()+'"')
 		os.remove('temp.m4a')
 	else:
-		os.system("mp4box.exe -add temp.mp4 -new "+'"'+saveto.get()+'"')
+		os.system("ffmpeg_vvceasy.exe -i temp.mp4 "+'"'+saveto.get()+'"')
 	os.remove('temp.mp4')
 	os.system('ffmpeg_vvceasy.exe -y -i "'+saveto.get()+'" -vf "thumbnail" -frames:v 1 temp.jpg')
 	imgtwo=Image.open('temp.jpg')
@@ -47,7 +50,7 @@ def EncodeButton():
 	os.remove(filename+"_266.mp4")
 	os.remove("temp.jpg")
 	os.remove("thumbnail.jpg")
-	fs2.config(text=f'Size(Mb): {os.path.getsize(saveto.get())/1048576:.2f}')
+	fs2.config(text=f'Size(Mb): {os.path.getsize(fname)/1048576:.2f}')
 def btnClickFunctiontwo():
 	fn=os.path.basename(filename).rsplit('.',1)
 	data = [("mp4","*.mp4")]
@@ -57,7 +60,7 @@ def audioQ(event):
 	audn = '{: .0f}'.format(audioquality.get())
 	audqual.configure(text='Quality (kb): '+audvn[int(audn)-1])
 def btnOpenVid(): os.popen(videoselect.get())
-def btnOpenVid2(): os.popen(saveto.get())
+def btnOpenVid2(): os.popen('"'+filename+'"'+'-266.mp4')
 def on_canvas_click(event):open_window()
 def open_window():
 	frame = 0
@@ -83,7 +86,7 @@ def open_window():
 			width, height = image.size
 			widthoriginal=width
 			if width+zoom>=widthoriginal:
-				image = image.resize((width+zoom, height+zoom), Image.ANTIALIAS)	
+				image = image.resize((width+zoom, height+zoom))	
 				if side == "left":
 					i = ImageTk.PhotoImage(image)
 					canvas2.create_image(0, 0, anchor='nw', image=i)
@@ -101,7 +104,7 @@ def open_window():
 				zoom=0
 			os.remove('temp.jpg')
 		update_image(videoselect.get(), "left")
-		update_image(saveto.get(), "right")
+		update_image(fname, "right")
 	def update(act):
 		nonlocal frame
 		nonlocal zoom
